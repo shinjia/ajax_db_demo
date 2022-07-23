@@ -4,15 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <title>AJAX_DB_DEMO</title>
 </head>
-<style>
-    .omover { background-color:#3366FF; color:#33FFFF; }
-    .omout { background-color:#FFCC66; color:#CC0000; }
-</style>
 </head>
 <body>
-<h2>jQuery(ajax) + PHP</h2>
+<h2>jQuery(ajax) + PHP (一些變化: jQuery UI Dialog)</h2>
 <h3>網頁執行計數：<span id="msg">0</span></h3>
 
 <p>地區選擇
@@ -26,22 +23,19 @@
         <option>宜蘭</option>
         <option>桃園</option>
         <option>新竹</option>
+        <option>沒有</option>
     </select>
+    <span id="area_list"></span>
 </p>
-    
-<table border="0" width="600">
-    <tr>
-        <td width="50%" bgcolor="#99EE77">
-            <div id="area_list"></div>
-        </td>
-        <td width="50%" valign="top" bgcolor="#FFAAFF">
-            <div id="area_display"></div>
-        </td>
-    </tr>
-</table>
+        
+<div id="dialog" title="個人基本資料">
+    <div id="area_display"></div>
+</div>
 
 
-<script src="jquery.js"></script>
+<!-- <script src="jquery.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script>
 $(document).ready(function(){
     // 設定計數器
@@ -52,7 +46,6 @@ $(document).ready(function(){
     // 設定地區選擇改變時的動作
     $('#city').change(function(){
         var prog = 'list_and_ajax.php?code=' + $('#city').val();
-        $('#area_display').empty();
 
         // $('#area_list').load(prog);
         $.ajax({
@@ -74,23 +67,22 @@ $(document).ready(function(){
     });
 });
 
-function show_detail(uid)
+function show_detail()
 {
-    // let prog = 'display.php?uid=' + uid
-    // $('#area_display').load(prog);
-
     $.ajax({
         url: 'display.php',
         data: {
-            uid: uid
+            uid: $('#username').val()
         },
         type: 'GET',
         dataType: 'html',
         success: function(data,textStatus,jqXHR) {
             $('#area_display').html(data);
+            $("#dialog").dialog();
         },
         error: function() {
             $('#area_display').html('error !');
+            $("#dialog").dialog();
         }
     });
 }

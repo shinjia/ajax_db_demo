@@ -40,34 +40,22 @@ try {
         $cnt++;
 
         $data .= <<< HEREDOC
-        <tr>
+        <tr onclick="show_detail('{$uid}');" style="cursor:pointer;" class="omout" onmouseover="this.className='omover'" onmouseout="this.className='omout'">
             <th>{$cnt}</th>
             <td>{$uid}</td>
-            <td>{$usercode}</td>
             <td>{$username}</td>
-            <td>{$address}</td>
-            <td>{$birthday}</td>
-            <td>{$height}</td>
-            <td>{$weight}</td>
-            <td>{$remark}</td>
         </tr>
 HEREDOC;
     }
 
     //網頁顯示
     $ihc_content = <<< HEREDOC
-    <h3>共有 {$total_rec} 筆記錄</h3>
+    <h3>地區在『{$address}』</h3>
     <table border="1" class="table">
         <tr>
-            <th>順序</th>
+            <th>序號</th>
             <th>uid</th>
-            <th>代碼</th>
             <th>姓名</th>
-            <th>地址</th>
-            <th>生日</th>
-            <th>身高</th>
-            <th>體重</th>
-            <th>備註</th>
         </tr>
         {$data}
     </table>

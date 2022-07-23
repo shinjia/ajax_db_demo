@@ -1,44 +1,68 @@
 <?php
-include "config.php";
+include 'config.php';
 
-$uid = $_GET["uid"];
+// 接收傳入變數
+$uid = isset($_GET['uid']) ? $_GET['uid'] : 0;
+
+// 網頁內容預設
+$ihc_content = '';
+$ihc_error = '';
 
 // 連接資料庫
-$link = db_open();
+$pdo = db_open();
 
+// SQL 語法
+$sqlstr = "SELECT * FROM person WHERE uid=?";
 
-// 寫出 SQL 語法
-$sqlstr = "SELECT * FROM person WHERE uid=" . $uid;
+$sth = $pdo->prepare($sqlstr);
+$sth->bindValue(1, $uid, PDO::PARAM_INT);
 
 // 執行 SQL
-$result = @mysqli_query($link, $sqlstr);
-if($row=mysqli_fetch_array($result))
-{
-   $uid      = $row["uid"];
-   $username = $row["username"];
-   $address  = $row["address"];
-   $birthday = $row["birthday"];
-   $height   = $row["height"];
-   $weight   = $row["weight"];
-   
-   $data = <<< HEREDOC
-   <TABLE border="1">
-     <TR><TH>姓名</TH> <TD>{$username}</TD></TR>
-     <TR><TH>地址</TH> <TD>{$address}</TD></TR>
-     <TR><TH>生日</TH> <TD>{$birthday}</TD></TR>
-     <TR><TH>身高</TH> <TD>{$height}</TD></TR>
-     <TR><TH>體重</TH> <TD>{$weight}</TD></TR>
-   </TABLE>
+try {
+  $sth->execute();
+  
+  if($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+      $uid = $row['uid'];
+      $usercode = $row['usercode'];
+      $username = $row['username'];
+      $address  = $row['address'];
+      $birthday = $row['birthday'];
+      $height   = $row['height'];
+      $weight   = $row['weight'];
+      $remark   = $row['remark'];
+
+      $data = <<< HEREDOC
+      <table border="1" class="table">
+          <tr><th>代碼</th><td>{$usercode}</td></tr>
+          <tr><th>姓名</th><td>{$username}</td></tr>
+          <tr><th>地址</th><td>{$address}</td></tr>
+          <tr><th>生日</th><td>{$birthday}</td></tr>
+          <tr><th>身高</th><td>{$height}</td></tr>
+          <tr><th>體重</th><td>{$weight}</td></tr>
+          <tr><th>備註</th><td>{$remark}</td></tr>
+      </table>
 HEREDOC;
+  }
+  else {
+      $data = '<p class="center">查不到相關記錄！</p>';
+  }
+
+  // 網頁內容
+  $ihc_content = $data;
 }
-else
-{
-	 $data = '查無相關記錄！';
+catch(PDOException $e) {
+  // db_error(ERROR_QUERY, $e->getMessage());
+  $ihc_error = error_message('ERROR_QUERY', $e->getMessage());
 }
 
+db_close();
 
+
+//網頁顯示
 $html = <<< HEREDOC
-{$data}
+<h3>詳細資料</h3>
+{$ihc_content}
+{$ihc_error}
 HEREDOC;
 
 echo $html;

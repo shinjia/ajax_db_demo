@@ -1,2 +1,6 @@
 # ajax_db_demo
-PHP教學範例：AJAX結合資料庫db的範例
+PHP 教學範例：AJAX 結合資料庫 db 的範例
+
+## Update
+- 2018/10/01
+- 2022/07/23
